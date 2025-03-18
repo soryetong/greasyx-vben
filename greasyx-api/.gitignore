@@ -1,0 +1,12 @@
+logs
+*.exe
+*.dll
+*.so
+.DS_Store
+*.iml
+*.swp
+*.json
+*.yaml
+.idea
+*.unix
+/bin

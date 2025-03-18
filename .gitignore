@@ -1,0 +1,10 @@
+.vscode/
+.idea/
+*.swp
+
+.DS_Store
+
+*.cert
+*.key
+*.log
+bin/

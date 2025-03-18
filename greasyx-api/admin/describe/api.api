@@ -1,0 +1,36 @@
+type ApiListResp {
+    Total int64     `json:"total"`
+    Items any     `json:"items"`
+}
+
+type UpsertApiReq {
+	ParentId    int64  `json:"parentId"`
+	Description string `json:"description"`
+	Method      string `json:"method"`
+	Path        string `json:"path"`
+}
+
+type ApiInfoResp {
+    Id          int64 `json:"id"`
+	ParentId    int64  `json:"parentId"`
+	Description string `json:"description"`
+	Method      string `json:"method"`
+	Path        string `json:"path"`
+    CreatedAt int64 `json:"createdAt"`
+    Children []*ApiInfoResp `json:"children"`
+}
+
+type ApiListReq {
+    Page int64 `json:"page" form:"page"`
+    PageSize int64 `json:"pageSize" form:"pageSize"`
+    Description string `json:"description" form:"description"`
+	Path        string `json:"path"  form:"path"`
+	OnlyParent bool `json:"onlyParent" form:"onlyParent"`
+}
+
+service SystemApi Use Jwt,Record {
+    post add(UpsertApiReq) returns
+    get list (ApiListReq) returns (ApiListResp)
+    put update/:id (UpsertApiReq) returns
+    delete delete/:id returns
+}

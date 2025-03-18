@@ -1,0 +1,22 @@
+type LoginReq {
+    Username string `json:"username" binding:"required"`
+    Password string `json:"password" binding:"required"`
+}
+
+type LoginResp {
+    Id int64 `json:"id"`
+	Password string `json:"password"`
+	RealName string `json:"realName"`
+	Roles []string `json:"roles"`
+	Username string `json:"username"`
+	AccessToken string `json:"accessToken"`
+}
+
+type LogoutReq {
+    WithCredentials bool `json:"withCredentials"`
+}
+
+service SystemAuth Use Record {
+    post login (LoginReq) returns (LoginResp)
+    post logout (LogoutReq) returns
+}

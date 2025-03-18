@@ -1,0 +1,59 @@
+{
+  "input-search": {
+    "placeholder": "Search",
+    "optTime": "Operating time"
+  },
+  "tree": {
+    "select_all": "Select All",
+    "unselect_all": "Cancel Select",
+    "expand_all": "Expand All",
+    "collapse_all": "Collapse all",
+    "hierarchical_association": "Hierarchical association",
+    "hierarchical_independence": "Hierarchical independence"
+  },
+  "table": {
+    "seq": "seq",
+    "createTime": "Create Time",
+    "updateTime": "Update Time",
+    "deleteTime": "Delete Time",
+    "status": "Status",
+    "action": "Action",
+    "sortId": "Sort ID",
+    "remark": "Remark",
+    "password": "Password",
+    "auth": "Auth"
+  },
+  "switch": {
+    "on": "ON",
+    "off": "OFF",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "button": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "create": "Create {moduleName}",
+    "update": "Update {moduleName}",
+    "delete": "Delete {moduleName}",
+    "search": "Search"
+  },
+  "modal": {
+    "create": "Create {moduleName}",
+    "update": "Update {moduleName}",
+    "delete": "Delete {moduleName}"
+  },
+  "notification": {
+    "create_success": "Create Success",
+    "create_failed": "Create Failed",
+    "update_success": "Update Success",
+    "update_failed": "Update Failed",
+    "delete_success": "Delete Success",
+    "delete_failed": "Delete Failed",
+    "update_status_success": "Update Status Success",
+    "update_status_failed": "Update Status Failed",
+    "no_auth": "Please select the permissions to be assigned"
+  },
+  "text": {
+    "do_you_want_delete": "Do you want to delete the {moduleName}?"
+  }
+}

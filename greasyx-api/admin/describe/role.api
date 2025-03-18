@@ -1,0 +1,45 @@
+type RoleListResp {
+    Total int64     `json:"total"`
+    Items any     `json:"items"`
+}
+
+type RoleListReq {
+    Page int64 `json:"page" form:"page"`
+    PageSize int64 `json:"pageSize" form:"pageSize"`
+    Name string `json:"name" form:"name"`
+    Status int64 `json:"status" form:"status"`
+}
+
+type UpsertRoleReq {
+    Name string `json:"name"`
+    Code string `json:"code"`
+    Sort int64 `json:"sort"`
+    Remark string `json:"remark"`
+    Status int64 `json:"status"`
+}
+
+type RoleInfoResp {
+    Id int64 `json:"id"`
+    Name string `json:"name"`
+    Code string `json:"code"`
+    Sort int64 `json:"sort"`
+    Remark string `json:"remark"`
+    Status int64 `json:"status"`
+    CreatedAt int64 `json:"createdAt"`
+    AuthId []int64 `json:"authId"`
+    ApiId []int64 `json:"apiId"`
+}
+
+type AssignRoleReq {
+    AuthId []int64 `json:"authId" binding:"required"`
+    ApiId []int64 `json:"apiId" binding:"required"`
+}
+
+service SystemRole Use Jwt,Record {
+    post add(UpsertRoleReq) returns
+    get list (RoleListReq) returns (RoleListResp)
+    get info/:id returns (RoleInfoResp)
+    put update/:id (UpsertRoleReq) returns
+    put assign/:id (AssignRoleReq) returns
+    delete delete/:id returns
+}

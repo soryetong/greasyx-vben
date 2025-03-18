@@ -1,0 +1,63 @@
+type MenuResp {
+    Total int64     `json:"total"`
+    Items any     `json:"items"`
+}
+
+type MenuInfo {
+	Id         int64      `json:"id"`
+	Status     int64      `json:"status"`
+	Type       string     `json:"type"`
+	Path       string     `json:"path"`
+	Name       string     `json:"name"`
+	RouteName  string     `json:"routeName"`
+	Component  string     `json:"component"`
+	Meta       MenuMeta   `json:"meta"`
+	ParentId   int64      `json:"parentId"`
+	Children   []MenuInfo `json:"children"`
+	Perm       string     `json:"perm"`
+	CreatedAt  int64 `json:"createdAt"`
+}
+
+type MenuMeta {
+	Authority           []string  `json:"authority"`
+	AffixTab            int64     `json:"affixTab"`
+	HideChildrenInMenu  int64     `json:"hideChildrenInMenu"`
+	HideInBreadcrumb    int64     `json:"hideInBreadcrumb"`
+	HideInMenu          int64     `json:"hideInMenu"`
+	HideInTab           int64     `json:"hideInTab"`
+	Icon                string    `json:"icon"`
+	KeepAlive           int64     `json:"keepAlive"`
+	Sort                int64     `json:"sort"`
+	Name                string    `json:"name"`
+}
+
+type RouterMetaResp {
+	Icon     string `json:"icon"`
+	Sort    int64     `json:"sort,omitempty"`
+	Title    string  `json:"title"`
+	AffixTab bool   `json:"affixTab,omitempty"`
+}
+
+type RouterResp {
+	Meta      RouterMetaResp    `json:"meta"`
+	Name      string            `json:"name"`
+	Path      string            `json:"path"`
+	Component string            `json:"component,omitempty"`
+	Children  []RouterResp      `json:"children,omitempty"`
+}
+
+type MenuTreeReq {
+    Page int64 `json:"page" form:"page"`
+    PageSize int64 `json:"pageSize" form:"pageSize"`
+    Name string `json:"name" form:"name"`
+    Status int64 `json:"status" form:"status"`
+}
+
+service SystemMenu Use Jwt,Record {
+    get router returns (MenuResp)
+    get tree (MenuTreeReq) returns (MenuResp)
+    post add (MenuInfo) returns
+    put update/:id (MenuInfo) returns
+    get info/:id returns (MenuInfo)
+    delete delete/:id returns
+}

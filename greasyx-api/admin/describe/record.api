@@ -1,0 +1,34 @@
+type RecordListReq {
+    Page int64 `json:"page" form:"page"`
+    PageSize int64 `json:"pageSize" form:"pageSize"`
+    Username string `json:"username" form:"username"`
+    CreateTime []string `form:"createTime[]" json:"createTime[]"`
+}
+
+type RecordListResp {
+    Total int64     `json:"total"`
+    Items any     `json:"items"`
+}
+
+type RecordInfoResp {
+	Id          int64  `json:"id"`
+	Username    string `json:"username"`
+	UserId      int64  `json:"userId"`
+	Description string `json:"description"`
+	Method      string `json:"method"`
+	Path        string `json:"path"`
+	StatusCode  int64  `json:"statusCode"`
+	Elapsed     string `json:"elapsed"`
+	Msg         string `json:"msg"`
+	Request     string `json:"request"`
+	Response    string `json:"response"`
+	Platform    string `json:"platform"`
+	Ip          string `json:"ip"`
+	Address     string `json:"address"`
+	CreatedAt   int64  `json:"createdAt"`
+}
+
+service SystemRecord Use Jwt,Record {
+    get list (RecordListReq) returns (RecordListResp)
+    delete delete/:id returns
+}

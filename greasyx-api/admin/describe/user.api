@@ -1,0 +1,50 @@
+type UserListResp {
+    Total int64     `json:"total"`
+    Items any     `json:"items"`
+}
+
+type UserInfoResp {
+    Id int64 `json:"id"`
+	RealName string `json:"realName"`
+	Roles []string `json:"roles"`
+    Username      string `json:"username" label:"用户名"`
+    Nickname      string `json:"nickname" label:"用户昵称"`
+    Mobile        string `json:"mobile" label:"手机号"`
+    Gender        int64  `json:"gender" label:"性别(1-男 2-女 0-保密)"`
+    Email         string `json:"email" label:"邮箱"`
+    Avatar        string `json:"avatar" label:"头像"`
+    Status         int64  `json:"status" label:"状态 1:禁用,2正常"`
+    Remark        string `json:"remark" label:"备注"`
+    LastLoginTime int64  `json:"lastLoginTime" label:"最后一次登录的时间"`
+    LastLoginIp   string `json:"lastLoginIp" label:"最后一次登录的IP"`
+    RoleId        int64  `json:"roleId" label:"角色ID"`
+    RoleName      string `json:"roleName" label:"角色名称"`
+    Permissions    []string `json:"permissions"`
+    CreatedAt       int64 `json:"createdAt"`
+}
+
+type UpsertUserReq {
+	Username string `json:"username" binding:"required,max=16,min=2" label:"用户名"`
+	Password string `json:"password" label:"密码"`
+	Nickname string `json:"nickname" binding:"required,max=16,min=2" label:"昵称"`
+	Status   int64  `json:"status" label:"状态"`
+	RoleId   int64  `json:"roleId" binding:"required" label:"角色ID"`
+	Mobile   string `json:"mobile"`
+	Email    string `json:"email"`
+	Remark   string `json:"remark"`
+}
+
+type UserListReq {
+    Page int64 `json:"page" form:"page"`
+    PageSize int64 `json:"pageSize" form:"pageSize"`
+    Username string `json:"username" form:"username"`
+    Status int64 `json:"status" form:"status"`
+}
+
+service SystemUser Use Jwt,Record {
+    get info returns (UserInfoResp)
+    post add (UpsertUserReq) returns
+    get list (UserListReq) returns (UserListResp)
+    put update/:id (UpsertUserReq) returns
+    delete delete/:id returns
+}

@@ -1,0 +1,120 @@
+{
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "codeLogin": "Code Login",
+    "qrcodeLogin": "Qr Code Login",
+    "forgetPassword": "Forget Password"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "analytics": "Analytics",
+    "workspace": "Workspace"
+  },
+  "system": {
+    "title": "System Management",
+    "user": {
+      "module": "User",
+      "title": "User Management",
+      "username": "User Name",
+      "nickName": "Nick Name",
+      "realName": "Real Name",
+      "email": "Email",
+      "phone": "Phone",
+      "authority": "Authority",
+      "orgId": "Subordinate Organization",
+      "deptId": "Subordinate Department",
+      "lastLoginIp": "Last Login IP",
+      "lastLoginTime": "Last Login Time",
+      "role": "Role",
+      "button": {
+        "create": "Create",
+        "delete": "Delete",
+        "update": "Update"
+      }
+    },
+    "menu": {
+      "module": "Menu",
+      "title": "Menu Management",
+      "name": "Menu Name",
+      "routeName": "Route Name",
+      "type": "Type",
+      "icon": "Icon",
+      "path": "Path",
+      "component": "Component",
+      "show": "Show",
+      "isExt": "Is Ext",
+      "keepAlive": "Keep Alive",
+      "parentId": "Parent Menu",
+      "perm": "Authority",
+      "affixTab": "Affix Tab",
+      "hideChildrenInMenu": "Hide Children In Menu",
+      "hideInBreadcrumb": "Hide In Breadcrumb",
+      "hideInMenu": "Hide In Menu",
+      "hideInTab": "Hide InT ab",
+      "button": {
+        "create": "Create",
+        "delete": "Delete",
+        "update": "Update"
+      }
+    },
+    "role": {
+      "module": "Role",
+      "title": "Role Management",
+      "name": "Role Name",
+      "code": "Role Code",
+      "show": "Show",
+      "apiAuth": "Api Auth",
+      "menuAuth": "Menu Auth",
+      "button": {
+        "create": "Create",
+        "auth": "Assign Permissions",
+        "delete": "Delete",
+        "update": "Update"
+      }
+    },
+    "api": {
+      "module": "API",
+      "title": "API Management",
+      "description": "API Description",
+      "parentId": "Parent API",
+      "method": "Method",
+      "Path": "Path",
+      "button": {
+        "create": "Create",
+        "delete": "Delete",
+        "update": "Update"
+      }
+    },
+    "dict": {
+      "module": "Dict",
+      "title": "Dict Management",
+      "dictName": "Dict Name",
+      "dictType": "Dict Type",
+      "itemKey": "Item Key",
+      "itemValue": "Item Value",
+      "button": {
+        "create": "Create",
+        "delete": "Delete",
+        "update": "Update"
+      }
+    },
+    "record": {
+      "module": "Operating Record",
+      "title": "Operating Record",
+      "username": "Operating User",
+      "description": "Description",
+      "method": "method",
+      "path": "Path",
+      "statusCode": "StatusCode",
+      "msg": "Msg",
+      "elapsed": "Elapsed(ms)",
+      "platform": "Platform",
+      "ip": "IP",
+      "createTime": "Operating Time",
+      "button": {
+        "delete": "Delete"
+      }
+    }
+  }
+}

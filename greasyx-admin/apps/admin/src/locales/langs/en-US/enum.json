@@ -1,0 +1,22 @@
+{
+  "status": {
+    "ON": "ON",
+    "OFF": "OFF",
+    "Select": "Select"
+  },
+  "authority": {
+    "CUSTOMER_USER": "Customer",
+    "GUEST_USER": "Guest",
+    "SYS_ADMIN": "Admin",
+    "SYS_MANAGER": "Manager"
+  },
+  "menuType": {
+    "folder": "Folder",
+    "menu": "Menu",
+    "button": "Button"
+  },
+  "successStatus": {
+    "success": "Success",
+    "failed": "Failed"
+  }
+}

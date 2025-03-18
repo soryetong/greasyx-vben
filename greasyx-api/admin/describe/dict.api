@@ -1,0 +1,41 @@
+type DictListResp {
+    Total int64     `json:"total"`
+    Items any     `json:"items"`
+}
+
+type DictListReq {
+    Page int64 `json:"page" form:"page"`
+    PageSize int64 `json:"pageSize" form:"pageSize"`
+    DictName string `json:"dictName" form:"dictName"`
+    DictType string `json:"dictType" form:"dictType"`
+    Status int64 `json:"status" form:"status"`
+}
+
+type UpsertDictReq {
+    DictName string `json:"dictName"`
+    DictType string `json:"dictType"`
+    ItemKey string `json:"itemKey"`
+    ItemValue string `json:"itemValue"`
+    Sort int64 `json:"sort"`
+    Remark string `json:"remark"`
+    Status int64 `json:"status"`
+}
+
+type DictInfoResp {
+    Id int64 `json:"id"`
+    DictName string `json:"dictName"`
+    DictType string `json:"dictType"`
+    ItemKey string `json:"itemKey"`
+    ItemValue string `json:"itemValue"`
+    Sort int64 `json:"sort"`
+    Remark string `json:"remark"`
+    Status int64 `json:"status"`
+    CreatedAt int64 `json:"createdAt"`
+}
+
+service SystemDict Use Jwt,Record {
+    post add(UpsertDictReq) returns
+    get list (DictListReq) returns (DictListResp)
+    put update/:id (UpsertDictReq) returns
+    delete delete/:id returns
+}
