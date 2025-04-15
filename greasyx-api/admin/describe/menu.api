@@ -53,7 +53,7 @@ type MenuTreeReq {
     Status int64 `json:"status" form:"status"`
 }
 
-service SystemMenu Use Jwt,Record {
+service SystemMenu Group Auth {
     get router returns (MenuResp)
     get tree (MenuTreeReq) returns (MenuResp)
     post add (MenuInfo) returns

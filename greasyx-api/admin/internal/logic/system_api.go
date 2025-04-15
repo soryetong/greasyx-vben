@@ -23,12 +23,12 @@ func NewSystemApiLogic() *SystemApiLogic {
 
 func (self *SystemApiLogic) Add(ctx context.Context, params *types.UpsertApiReq) (err error) {
 	var has int64
-	gina.Db.Model(&models.SysApis{}).Where("parent_id != ?", 0).Where("path = ?", params.Path).Count(&has)
+	gina.GMySQL().Model(&models.SysApis{}).Where("parent_id != ?", 0).Where("path = ?", params.Path).Count(&has)
 	if has > 0 {
 		return fmt.Errorf("API已存在！")
 	}
 
-	err = gina.Db.Create(&models.SysApis{
+	err = gina.GMySQL().Create(&models.SysApis{
 		ParentId:    params.ParentId,
 		Description: params.Description,
 		Method:      params.Method,
@@ -40,7 +40,7 @@ func (self *SystemApiLogic) Add(ctx context.Context, params *types.UpsertApiReq)
 
 func (self *SystemApiLogic) List(ctx context.Context, params *types.ApiListReq) (resp *types.ApiListResp, err error) {
 	resp = &types.ApiListResp{}
-	query := gina.Db.Model(&models.SysApis{})
+	query := gina.GMySQL().Model(&models.SysApis{})
 	if params.Description != "" {
 		query.Where("description like ?", params.Description+"%")
 	}
@@ -81,12 +81,12 @@ func (self *SystemApiLogic) List(ctx context.Context, params *types.ApiListReq) 
 
 func (self *SystemApiLogic) Update(ctx context.Context, id int64, params *types.UpsertApiReq) (err error) {
 	var has int64
-	gina.Db.Model(&models.SysApis{}).Where("parent_id != ?", 0).Where("path = ?", params.Path).Count(&has)
+	gina.GMySQL().Model(&models.SysApis{}).Where("parent_id != ?", 0).Where("path = ?", params.Path).Count(&has)
 	if has > 0 {
 		return fmt.Errorf("API已存在！")
 	}
 
-	err = gina.Db.Model(&models.SysApis{}).Where("id = ?", id).
+	err = gina.GMySQL().Model(&models.SysApis{}).Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"parent_id":   params.ParentId,
 			"description": params.Description,
@@ -99,19 +99,19 @@ func (self *SystemApiLogic) Update(ctx context.Context, id int64, params *types.
 
 func (self *SystemApiLogic) Delete(ctx context.Context, id int64) (err error) {
 	var count int64
-	gina.Db.Where("api_id", id).Model(&models.SysRoleApis{}).Count(&count)
+	gina.GMySQL().Where("api_id", id).Model(&models.SysRoleApis{}).Count(&count)
 	if count > 0 {
 		return fmt.Errorf("请先删除角色API权限后再操作")
 	}
 
-	err = gina.Db.Delete(&models.SysApis{}, "id = ?", id).Error
+	err = gina.GMySQL().Delete(&models.SysApis{}, "id = ?", id).Error
 
 	return
 }
 
 func (self *SystemApiLogic) CacheApiInfo() {
 	var list []*models.SysApis
-	if err := gina.Db.Model(&models.SysApis{}).Find(&list).Error; err != nil {
+	if err := gina.GMySQL().Model(&models.SysApis{}).Find(&list).Error; err != nil {
 		gina.Log.Error("[CacheApiInfo]获取API信息失败！", zap.Error(err))
 		return
 	}

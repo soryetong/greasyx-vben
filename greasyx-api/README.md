@@ -20,7 +20,7 @@
 
 3. 全项目内搜索 `greasyx-api` 并替换为你的 `package name`
 
-4. 全项目内搜索 `gina.Db` 并替换为你的 `Db链接`
+4. 全项目内搜索 `gina.GMySQL()` 并替换为你的 `Db链接`
 
 5. 在你的项目中加载路由 `router.InitRouter()`, 记得自行实现中间件逻辑
 

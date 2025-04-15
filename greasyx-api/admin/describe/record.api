@@ -28,7 +28,7 @@ type RecordInfoResp {
 	CreatedAt   int64  `json:"createdAt"`
 }
 
-service SystemRecord Use Jwt,Record {
+service SystemRecord Group Auth {
     get list (RecordListReq) returns (RecordListResp)
     delete delete/:id returns
 }

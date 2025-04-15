@@ -16,7 +16,7 @@ type LogoutReq {
     WithCredentials bool `json:"withCredentials"`
 }
 
-service SystemAuth Use Record {
+service SystemAuth Group Public {
     post login (LoginReq) returns (LoginResp)
     post logout (LogoutReq) returns
 }

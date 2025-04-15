@@ -8,7 +8,7 @@ import (
 
 	"github.com/jinzhu/copier"
 	"github.com/soryetong/greasyx/gina"
-	"github.com/soryetong/greasyx/libs/auth"
+	"github.com/soryetong/greasyx/libs/xauth"
 )
 
 type SystemMenuLogic struct {
@@ -20,17 +20,17 @@ func NewSystemMenuLogic() *SystemMenuLogic {
 
 func (self *SystemMenuLogic) Router(ctx context.Context) (resp *types.MenuResp, err error) {
 	var authIds []int64
-	gina.Db.Table("sys_users").
+	gina.GMySQL().Table("sys_users").
 		Select("sys_role_auths.auth_id").
 		Joins("JOIN sys_role_auths ON sys_users.role_id = sys_role_auths.role_id").
-		Where("sys_users.id = ?", auth.GetTokenData[int64](ctx, "id")).
+		Where("sys_users.id = ?", xauth.GetTokenData[int64](ctx, "id")).
 		Pluck("sys_role_auths.auth_id", &authIds)
 	if len(authIds) == 0 {
 		return
 	}
 
 	var list []*models.SysMenus
-	if err = gina.Db.Model(&models.SysMenus{}).
+	if err = gina.GMySQL().Model(&models.SysMenus{}).
 		Where("status = ?", 1).
 		Where("id IN ?", authIds).
 		Where("type != ?", "BUTTON").
@@ -72,7 +72,7 @@ func (self *SystemMenuLogic) getMenuRouter(menuList []*models.SysMenus, pid int6
 }
 
 func (self *SystemMenuLogic) Tree(ctx context.Context, params *types.MenuTreeReq) (resp *types.MenuResp, err error) {
-	query := gina.Db.Model(&models.SysMenus{})
+	query := gina.GMySQL().Model(&models.SysMenus{})
 	if params.Name != "" {
 		query.Where("name like ?", params.Name+"%")
 	}
@@ -103,13 +103,13 @@ func (self *SystemMenuLogic) Add(ctx context.Context, params *types.MenuInfo) (e
 	data := new(models.SysMenus)
 	_ = copier.Copy(data, params)
 	_ = copier.Copy(data, params.Meta)
-	err = gina.Db.Model(&models.SysMenus{}).Create(data).Error
+	err = gina.GMySQL().Model(&models.SysMenus{}).Create(data).Error
 
 	return
 }
 
 func (self *SystemMenuLogic) Update(ctx context.Context, id int64, params *types.MenuInfo) (err error) {
-	err = gina.Db.Model(&models.SysMenus{}).Where("id = ?", id).
+	err = gina.GMySQL().Model(&models.SysMenus{}).Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"parent_id":             params.ParentId,
 			"path":                  params.Path,
@@ -140,11 +140,11 @@ func (self *SystemMenuLogic) Info(ctx context.Context, id int64) (resp *types.Me
 
 func (self *SystemMenuLogic) Delete(ctx context.Context, id int64) (err error) {
 	var count int64
-	gina.Db.Model(&models.SysRoleAuths{}).Where("auth_id", id).Count(&count)
+	gina.GMySQL().Model(&models.SysRoleAuths{}).Where("auth_id", id).Count(&count)
 	if count > 0 {
 		return fmt.Errorf("请删除角色菜单权限！")
 	}
-	err = gina.Db.Delete(&models.SysMenus{}, "id = ?", id).Error
+	err = gina.GMySQL().Delete(&models.SysMenus{}, "id = ?", id).Error
 
 	return
 }

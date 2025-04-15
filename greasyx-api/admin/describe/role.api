@@ -35,7 +35,7 @@ type AssignRoleReq {
     ApiId []int64 `json:"apiId" binding:"required"`
 }
 
-service SystemRole Use Jwt,Record {
+service SystemRole Group Auth {
     post add(UpsertRoleReq) returns
     get list (RoleListReq) returns (RoleListResp)
     get info/:id returns (RoleInfoResp)

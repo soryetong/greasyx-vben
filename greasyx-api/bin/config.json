@@ -1,0 +1,23 @@
+{
+  "App": {
+    "Name": "app",
+    "Env": "debug",
+    "Addr": ":18003",
+    "Timeout": 1
+  },
+  "Db": [
+    {
+      "Dsn": "root:123456@tcp(127.0.0.1:3307)/greasyx-admin?charset=utf8&parseTime=True&loc=Local&timeout=5s",
+      "Driver": "mysql",
+      "UseOrm": true
+    }
+  ],
+  "Log": {
+    "Path": "./logs/",
+    "Mode": "both",
+    "Logrotate": true
+  },
+  "Casbin": {
+    "ModePath": ""
+  }
+}

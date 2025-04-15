@@ -28,7 +28,7 @@ type ApiListReq {
 	OnlyParent bool `json:"onlyParent" form:"onlyParent"`
 }
 
-service SystemApi Use Jwt,Record {
+service SystemApi Group Auth {
     post add(UpsertApiReq) returns
     get list (ApiListReq) returns (ApiListResp)
     put update/:id (UpsertApiReq) returns

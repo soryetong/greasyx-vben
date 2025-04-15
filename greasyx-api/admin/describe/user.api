@@ -41,7 +41,7 @@ type UserListReq {
     Status int64 `json:"status" form:"status"`
 }
 
-service SystemUser Use Jwt,Record {
+service SystemUser Group Auth {
     get info returns (UserInfoResp)
     post add (UpsertUserReq) returns
     get list (UserListReq) returns (UserListResp)

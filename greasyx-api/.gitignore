@@ -9,4 +9,4 @@ logs
 *.yaml
 .idea
 *.unix
-/bin
+!/bin/config.json

@@ -33,7 +33,7 @@ type DictInfoResp {
     CreatedAt int64 `json:"createdAt"`
 }
 
-service SystemDict Use Jwt,Record {
+service SystemDict Group Auth {
     post add(UpsertDictReq) returns
     get list (DictListReq) returns (DictListResp)
     put update/:id (UpsertDictReq) returns

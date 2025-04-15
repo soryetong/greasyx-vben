@@ -10,7 +10,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/soryetong/greasyx/gina"
 	"github.com/soryetong/greasyx/modules/casbinmodule"
-	"github.com/soryetong/greasyx/modules/mysqlmodule"
+	"github.com/soryetong/greasyx/modules/dbmodule"
 	"gorm.io/gorm"
 )
 
@@ -23,12 +23,12 @@ func NewSystemRoleLogic() *SystemRoleLogic {
 
 func (self *SystemRoleLogic) Add(ctx context.Context, params *types.UpsertRoleReq) (err error) {
 	var has int64
-	gina.Db.Model(&models.SysRoles{}).Where("code = ?", params.Code).Count(&has)
+	gina.GMySQL().Model(&models.SysRoles{}).Where("code = ?", params.Code).Count(&has)
 	if has > 0 {
 		return fmt.Errorf("角色已存在！")
 	}
 
-	err = gina.Db.Create(&models.SysRoles{
+	err = gina.GMySQL().Create(&models.SysRoles{
 		Name:   params.Name,
 		Code:   params.Code,
 		Status: params.Status,
@@ -42,7 +42,7 @@ func (self *SystemRoleLogic) Add(ctx context.Context, params *types.UpsertRoleRe
 func (self *SystemRoleLogic) List(ctx context.Context, params *types.RoleListReq) (resp *types.RoleListResp, err error) {
 	resp = &types.RoleListResp{}
 
-	query := gina.Db.Model(&models.SysRoles{}).Order("id asc")
+	query := gina.GMySQL().Model(&models.SysRoles{}).Order("id asc")
 	if params.Name != "" {
 		query.Where("name like ?", params.Name+"%")
 	}
@@ -54,7 +54,7 @@ func (self *SystemRoleLogic) List(ctx context.Context, params *types.RoleListReq
 	}
 
 	var list []*models.SysRoles
-	if err = query.Scopes(mysqlmodule.Paginate(params.Page, params.PageSize)).Find(&list).Error; err != nil {
+	if err = query.Scopes(dbmodule.GormPaginate(params.Page, params.PageSize)).Find(&list).Error; err != nil {
 		return
 	}
 
@@ -71,7 +71,7 @@ func (self *SystemRoleLogic) List(ctx context.Context, params *types.RoleListReq
 }
 
 func (self *SystemRoleLogic) Update(ctx context.Context, id int64, params *types.UpsertRoleReq) (err error) {
-	err = gina.Db.Model(&models.SysRoles{}).Where("id = ?", id).
+	err = gina.GMySQL().Model(&models.SysRoles{}).Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"name":   params.Name,
 			"code":   params.Code,
@@ -94,7 +94,7 @@ func (self *SystemRoleLogic) deleteRoleAuth(ctx context.Context, tx *gorm.DB, id
 }
 
 func (self *SystemRoleLogic) Delete(ctx context.Context, id int64) (err error) {
-	err = gina.Db.Transaction(func(tx *gorm.DB) error {
+	err = gina.GMySQL().Transaction(func(tx *gorm.DB) error {
 		if err = tx.Delete(&models.SysRoles{}, "id = ?", id).Error; err != nil {
 			return err
 		}
@@ -107,7 +107,7 @@ func (self *SystemRoleLogic) Delete(ctx context.Context, id int64) (err error) {
 
 func (self *SystemRoleLogic) Assign(ctx context.Context, id int64, params *types.AssignRoleReq) (err error) {
 	var casbinInfos []casbinmodule.CasbinInfo
-	err = gina.Db.Transaction(func(tx *gorm.DB) error {
+	err = gina.GMySQL().Transaction(func(tx *gorm.DB) error {
 		if err = self.deleteRoleAuth(ctx, tx, id); err != nil {
 			return err
 		}
@@ -159,7 +159,7 @@ func (self *SystemRoleLogic) Assign(ctx context.Context, id int64, params *types
 
 func (self *SystemRoleLogic) Info(ctx context.Context, id int64) (resp *types.RoleInfoResp, err error) {
 	role := &models.SysRoles{}
-	if err = gina.Db.Preload("RoleAuths").Preload("RoleApis").First(&role, id).Error; err != nil {
+	if err = gina.GMySQL().Preload("RoleAuths").Preload("RoleApis").First(&role, id).Error; err != nil {
 		return
 	}
 

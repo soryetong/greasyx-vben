@@ -10,8 +10,8 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/soryetong/greasyx/gina"
 	"github.com/soryetong/greasyx/helper"
-	"github.com/soryetong/greasyx/libs/auth"
-	"github.com/soryetong/greasyx/modules/mysqlmodule"
+	"github.com/soryetong/greasyx/libs/xauth"
+	"github.com/soryetong/greasyx/modules/dbmodule"
 )
 
 type SystemUserLogic struct {
@@ -23,7 +23,7 @@ func NewSystemUserLogic() *SystemUserLogic {
 
 func (self *SystemUserLogic) Info(ctx context.Context) (resp *types.UserInfoResp, err error) {
 	user := models.SysUsers{}
-	if err = gina.Db.Where("id = ?", auth.GetTokenData[int64](ctx, "id")).First(&user).Error; err != nil {
+	if err = gina.GMySQL().Where("id = ?", xauth.GetTokenData[int64](ctx, "id")).First(&user).Error; err != nil {
 		return
 	}
 	resp = new(types.UserInfoResp)
@@ -39,7 +39,7 @@ func (self *SystemUserLogic) Info(ctx context.Context) (resp *types.UserInfoResp
 
 	// 获取权限
 	var results []models.SysMenus
-	if err = gina.Db.Model(&models.SysMenus{}).
+	if err = gina.GMySQL().Model(&models.SysMenus{}).
 		Select("perm").
 		Where("type = ?", "BUTTON").
 		Where("id IN ?", info.AuthId).
@@ -55,7 +55,7 @@ func (self *SystemUserLogic) Info(ctx context.Context) (resp *types.UserInfoResp
 
 func (self *SystemUserLogic) UserByName(username string) (user models.SysUsers, err error) {
 	user = models.SysUsers{}
-	err = gina.Db.Where("username = ?", username).First(&user).Error
+	err = gina.GMySQL().Where("username = ?", username).First(&user).Error
 	// todo 头像
 	// user.Avatar = utils.TransformImageUrl(user.Avatar)
 
@@ -73,7 +73,7 @@ func (self *SystemUserLogic) Add(ctx context.Context, params *types.UpsertUserRe
 	}
 
 	salt := helper.RandString(6)
-	err = gina.Db.Create(&models.SysUsers{
+	err = gina.GMySQL().Create(&models.SysUsers{
 		Username: username,
 		Salt:     salt,
 		Password: helper.MakePasswd(params.Password, salt),
@@ -84,7 +84,7 @@ func (self *SystemUserLogic) Add(ctx context.Context, params *types.UpsertUserRe
 		Email:    params.Email,
 		Remark:   params.Remark,
 		RoleId:   params.RoleId,
-		CreateBy: auth.GetTokenData[int64](ctx, "id"),
+		CreateBy: xauth.GetTokenData[int64](ctx, "id"),
 	}).Error
 
 	return
@@ -93,7 +93,7 @@ func (self *SystemUserLogic) Add(ctx context.Context, params *types.UpsertUserRe
 func (self *SystemUserLogic) List(ctx context.Context, params *types.UserListReq) (resp *types.UserListResp, err error) {
 	resp = &types.UserListResp{}
 
-	query := gina.Db.Model(&models.SysUsers{}).Order("id desc").Preload("SysRole")
+	query := gina.GMySQL().Model(&models.SysUsers{}).Order("id desc").Preload("SysRole")
 	if params.Username != "" {
 		query.Where("username like ?", params.Username+"%")
 	}
@@ -105,7 +105,7 @@ func (self *SystemUserLogic) List(ctx context.Context, params *types.UserListReq
 	}
 
 	var list []*models.SysUsers
-	if err = query.Scopes(mysqlmodule.Paginate(params.Page, params.PageSize)).Find(&list).Error; err != nil {
+	if err = query.Scopes(dbmodule.GormPaginate(params.Page, params.PageSize)).Find(&list).Error; err != nil {
 		return
 	}
 
@@ -124,13 +124,13 @@ func (self *SystemUserLogic) List(ctx context.Context, params *types.UserListReq
 
 func (self *SystemUserLogic) Update(ctx context.Context, id int64, params *types.UpsertUserReq) (err error) {
 	user := models.SysUsers{}
-	if err = gina.Db.First(&user, id).Error; err != nil {
+	if err = gina.GMySQL().First(&user, id).Error; err != nil {
 		return err
 	}
 
 	if user.Username != params.Username {
 		var count int64
-		gina.Db.Model(&models.SysUsers{}).Where("username = ?", params.Username).Count(&count)
+		gina.GMySQL().Model(&models.SysUsers{}).Where("username = ?", params.Username).Count(&count)
 		if count >= 1 {
 			return errors.New("用户已存在")
 		}
@@ -144,7 +144,7 @@ func (self *SystemUserLogic) Update(ctx context.Context, id int64, params *types
 		"mobile":    params.Mobile,
 		"email":     params.Email,
 		"remark":    params.Remark,
-		"update_by": auth.GetTokenData[int64](ctx, "id"),
+		"update_by": xauth.GetTokenData[int64](ctx, "id"),
 	}
 	if len(params.Password) > 0 {
 		newSalt := helper.RandString(6)
@@ -152,13 +152,13 @@ func (self *SystemUserLogic) Update(ctx context.Context, id int64, params *types
 		uMap["password"] = helper.MakePasswd(params.Password, newSalt)
 	}
 
-	err = gina.Db.Model(&models.SysUsers{}).Where("id = ?", id).Updates(uMap).Error
+	err = gina.GMySQL().Model(&models.SysUsers{}).Where("id = ?", id).Updates(uMap).Error
 
 	return
 }
 
 func (self *SystemUserLogic) Delete(ctx context.Context, id int64) (err error) {
-	err = gina.Db.Delete(&models.SysUsers{}, "id = ?", id).Error
+	err = gina.GMySQL().Delete(&models.SysUsers{}, "id = ?", id).Error
 
 	return
 }

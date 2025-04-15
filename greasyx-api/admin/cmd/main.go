@@ -5,7 +5,7 @@ import (
 
 	"github.com/soryetong/greasyx/gina"
 	_ "github.com/soryetong/greasyx/modules/casbinmodule"
-	_ "github.com/soryetong/greasyx/modules/mysqlmodule"
+	_ "github.com/soryetong/greasyx/modules/dbmodule"
 )
 
 func main() {

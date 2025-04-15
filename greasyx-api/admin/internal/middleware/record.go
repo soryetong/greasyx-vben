@@ -14,7 +14,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/soryetong/greasyx/gina"
 	"github.com/soryetong/greasyx/helper"
-	"github.com/soryetong/greasyx/libs/auth"
+	"github.com/soryetong/greasyx/libs/xauth"
+
 	"go.uber.org/zap"
 )
 
@@ -57,10 +58,11 @@ func Record() gin.HandlerFunc {
 			Method:      ctx.Request.Method,
 			Path:        path,
 			Request:     string(request),
-			UserId:      auth.GetTokenData[int64](ctx, "id"),
-			Username:    auth.GetTokenData[string](ctx, "username"),
+			UserId:      xauth.GetTokenData[int64](ctx, "id"),
+			Username:    xauth.GetTokenData[string](ctx, "username"),
 			Platform:    helper.GetPlatform(userAgent) + " " + helper.GetBrowser(userAgent),
 			Description: new(logic.SystemApiLogic).GetRecordDescription(helper.ConvertToRestfulURL(newPath), ctx.Request.Method),
+			Ip:          helper.GetClientRealIP(ctx),
 		}
 
 		writer := &responseBodyWriter{
@@ -81,7 +83,7 @@ func Record() gin.HandlerFunc {
 		respData, _ := json.Marshal(resp.Data)
 		record.Response = string(respData)
 
-		if err := gina.Db.Create(&record).Error; err != nil {
+		if err := gina.GMySQL().Create(&record).Error; err != nil {
 			gina.Log.Error("记录操作日志异常", zap.Error(err), zap.Any("record", record))
 		}
 	}

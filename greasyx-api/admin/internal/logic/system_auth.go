@@ -9,7 +9,7 @@ import (
 
 	"github.com/soryetong/greasyx/gina"
 	"github.com/soryetong/greasyx/helper"
-	"github.com/soryetong/greasyx/libs/auth"
+	"github.com/soryetong/greasyx/libs/xauth"
 	"go.uber.org/zap"
 )
 
@@ -22,7 +22,7 @@ func NewSystemAuthLogic() *SystemAuthLogic {
 
 func (self *SystemAuthLogic) Login(ctx context.Context, params *types.LoginReq) (resp *types.LoginResp, err error) {
 	user := new(models.SysUsers)
-	if err = gina.Db.Model(&models.SysUsers{}).Where("username = ?", params.Username).First(user).Error; err != nil {
+	if err = gina.GMySQL().Model(&models.SysUsers{}).Where("username = ?", params.Username).First(user).Error; err != nil {
 		return nil, errors.New("用户不存在")
 	}
 	if user.Status != models.SysUserStatusNormal {
@@ -33,7 +33,7 @@ func (self *SystemAuthLogic) Login(ctx context.Context, params *types.LoginReq) 
 		return nil, errors.New("密码错误")
 	}
 
-	token, err := auth.GenerateJwtToken(map[string]interface{}{
+	token, err := xauth.GenerateJwtToken(map[string]interface{}{
 		"id":       user.Id,
 		"username": user.Username,
 		"role_id":  user.RoleId,

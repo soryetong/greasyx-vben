@@ -7,7 +7,7 @@ import (
 
 	"github.com/jinzhu/copier"
 	"github.com/soryetong/greasyx/gina"
-	"github.com/soryetong/greasyx/modules/mysqlmodule"
+	"github.com/soryetong/greasyx/modules/dbmodule"
 )
 
 type SystemDictLogic struct {
@@ -20,7 +20,7 @@ func NewSystemDictLogic() *SystemDictLogic {
 func (self *SystemDictLogic) Add(ctx context.Context, params *types.UpsertDictReq) (err error) {
 	data := new(models.SysDicts)
 	_ = copier.Copy(data, params)
-	err = gina.Db.Model(&models.SysDicts{}).Create(data).Error
+	err = gina.GMySQL().Model(&models.SysDicts{}).Create(data).Error
 
 	return
 }
@@ -28,7 +28,7 @@ func (self *SystemDictLogic) Add(ctx context.Context, params *types.UpsertDictRe
 func (self *SystemDictLogic) List(ctx context.Context, params *types.DictListReq) (resp *types.DictListResp, err error) {
 	resp = &types.DictListResp{}
 
-	query := gina.Db.Model(&models.SysDicts{}).Order("id desc")
+	query := gina.GMySQL().Model(&models.SysDicts{}).Order("id desc")
 	if params.DictName != "" {
 		query.Where("dict_name like ?", params.DictName+"%")
 	}
@@ -43,7 +43,7 @@ func (self *SystemDictLogic) List(ctx context.Context, params *types.DictListReq
 	}
 
 	var list []*models.SysDicts
-	if err = query.Scopes(mysqlmodule.Paginate(params.Page, params.PageSize)).Find(&list).Error; err != nil {
+	if err = query.Scopes(dbmodule.GormPaginate(params.Page, params.PageSize)).Find(&list).Error; err != nil {
 		return
 	}
 
@@ -60,7 +60,7 @@ func (self *SystemDictLogic) List(ctx context.Context, params *types.DictListReq
 }
 
 func (self *SystemDictLogic) Update(ctx context.Context, id int64, params *types.UpsertDictReq) (err error) {
-	err = gina.Db.Model(&models.SysDicts{}).Where("id = ?", id).
+	err = gina.GMySQL().Model(&models.SysDicts{}).Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"dict_name":  params.DictName,
 			"dict_type":  params.DictType,
@@ -75,7 +75,7 @@ func (self *SystemDictLogic) Update(ctx context.Context, id int64, params *types
 }
 
 func (self *SystemDictLogic) Delete(ctx context.Context, id int64) (err error) {
-	err = gina.Db.Delete(&models.SysDicts{}, "id = ?", id).Error
+	err = gina.GMySQL().Delete(&models.SysDicts{}, "id = ?", id).Error
 
 	return
 }
